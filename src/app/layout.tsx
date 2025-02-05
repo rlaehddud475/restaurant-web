@@ -1,4 +1,4 @@
-import StyledJsxRegistry from './registry'
+import StyledConponentsRegistry from './registry'
 import './globals.css'
 import Header from './global/ui/outlines/Header'
 import Footer from './global/ui/outlines/Footer'
@@ -10,11 +10,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <StyledJsxRegistry>
+        <StyledConponentsRegistry>
           <Header />
           <main>{children}</main>
           <Footer />
-        </StyledJsxRegistry>
+        </StyledConponentsRegistry>
       </body>
     </html>
   )
