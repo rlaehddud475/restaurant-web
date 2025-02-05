@@ -5,11 +5,12 @@ import Image from 'next/image'
 import { styled } from 'styled-components'
 import { SlLogin } from 'react-icons/sl'
 import { FaUserPlus, FaHome, FaSearch } from 'react-icons/fa'
+import sizes from '../../styles/sizes'
 import logo from '../../assets/images/logo.png'
 
 const StyledHeader = styled.header``
 const StyledForm = styled.form``
-const StyledMenu = styled.nav``
+const StyledMenu = styled.menu``
 
 const Header = () => {
   return (
