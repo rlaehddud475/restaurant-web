@@ -1,7 +1,9 @@
-import StyledConponentsRegistry from './registry'
-import './globals.css'
+import StyledComponentsRegistry from './registry'
 import Header from './global/ui/outlines/Header'
 import Footer from './global/ui/outlines/Footer'
+
+import './globals.css'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -10,11 +12,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <StyledConponentsRegistry>
+        <StyledComponentsRegistry>
           <Header />
-          <main>{children}</main>
+          <main className="main-content">{children}</main>
           <Footer />
-        </StyledConponentsRegistry>
+        </StyledComponentsRegistry>
       </body>
     </html>
   )

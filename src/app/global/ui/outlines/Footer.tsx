@@ -1,7 +1,15 @@
 'use client'
 import React from 'react'
 import { styled } from 'styled-components'
-const StyledFooter = styled.footer``
+import colors from '../../styles/colors'
+const { dark, light } = colors
+
+const StyledFooter = styled.footer`
+  background: ${dark};
+  min-height: 200px;
+  color: ${light};
+`
+
 const Footer = () => {
   return (
     <StyledFooter>
@@ -9,4 +17,5 @@ const Footer = () => {
     </StyledFooter>
   )
 }
+
 export default React.memo(Footer)
