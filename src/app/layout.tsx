@@ -5,6 +5,7 @@ import { CommonProvider } from './global/contexts/CommonContext'
 import { Metadata } from 'next'
 import 'react-datepicker/dist/react-datepicker.css'
 import './globals.css'
+
 export const metadata: Metadata = {
   title: '핀테크 포토폴리오',
   description: '금융 api 프로젝트',
