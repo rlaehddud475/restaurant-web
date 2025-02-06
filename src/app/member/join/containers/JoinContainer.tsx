@@ -1,9 +1,11 @@
 'use client'
 import JoinForm from '../components/JoinForm'
+import { useSearchParams } from 'next/navigation'
 import React, { useState, useCallback, useActionState } from 'react'
 import { processJoin } from '../../services/actions'
 const JoinContainer = () => {
-  const actionState = useActionState(processJoin)
+  const searchParms = useSearchParams()
+  const actionState = useActionState(processJoin, searchParms)
   const [form, setForm] = useState({})
   const onChange = useCallback((e) => {
     setForm((form) => ({ ...form, [e.target.name]: e.target.value }))
