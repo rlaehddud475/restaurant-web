@@ -138,7 +138,12 @@ export const processLogin = async (params, formData: FormData) => {
       const result = await res.json()
       if (res.status === 200 && result.success) {
         const cookie = await cookies()
-        cookie.set('token', result.data)
+        cookie.set('token', result.data, {
+          httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+          path: '/',
+        })
       } else {
         errors = result.message
         hasErrors = true
