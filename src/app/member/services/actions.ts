@@ -2,7 +2,7 @@
 import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
 import { cookies } from 'next/headers'
-
+import apiRequest from '@/app/global/libs/apiRequest'
 /**
  * 회원가입 처리
  * @param params : 쿼리스트링값
@@ -111,8 +111,11 @@ export const processJoin = async (params, formData: FormData) => {
  */
 export const processLogin = async (params, formData: FormData) => {
   const redirectUrl = params?.redirectUrl ?? '/'
+
   let errors = {}
   let hasErrors = false
+
+  // 필수 항목 검증 S
   const email = formData.get('email')
   const password = formData.get('password')
   if (!email || !email.trim()) {
@@ -120,11 +123,16 @@ export const processLogin = async (params, formData: FormData) => {
     errors.email.push('이메일을 입력하세요.')
     hasErrors = true
   }
+
   if (!password || !password.trim()) {
     errors.password = errors.password ?? []
     errors.password.push('비밀번호를 입력하세요.')
     hasErrors = true
   }
+
+  // 필수 항목 검증 E
+
+  // 서버 요청 처리 S
   if (!hasErrors) {
     const apiUrl = process.env.API_URL + '/member/login'
     try {
@@ -135,8 +143,10 @@ export const processLogin = async (params, formData: FormData) => {
         },
         body: JSON.stringify({ email, password }),
       })
+
       const result = await res.json()
       if (res.status === 200 && result.success) {
+        // 회원 인증 성공
         const cookie = await cookies()
         cookie.set('token', result.data, {
           httpOnly: true,
@@ -145,17 +155,40 @@ export const processLogin = async (params, formData: FormData) => {
           path: '/',
         })
       } else {
+        // 회원 인증 실패
         errors = result.message
         hasErrors = true
       }
     } catch (err) {
       console.error(err)
     }
-    return
   }
+  // 서버 요청 처리 E
+
   if (hasErrors) {
     return errors
   }
 
+  // 로그인 성공시 이동
   redirect(redirectUrl)
+}
+
+/**
+ * 로그인한 회원 정보를 조회
+ *
+ */
+export const getUserInfo = async () => {
+  const cookie = await cookies()
+  if (!cookie.has('token')) return
+  try {
+    const res = await apiRequest('/member')
+    if (res.status === 200) {
+      const result = await res.json()
+      return result.success && result.data
+    } else {
+      cookie.delete('token')
+    }
+  } catch (err) {
+    cookie.delete('token')
+  }
 }

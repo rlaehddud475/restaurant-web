@@ -5,16 +5,20 @@ import { CommonProvider } from './global/contexts/CommonContext'
 import { Metadata } from 'next'
 import 'react-datepicker/dist/react-datepicker.css'
 import './globals.css'
-
+import { getUserInfo } from './member/services/actions'
 export const metadata: Metadata = {
   title: '핀테크 포토폴리오',
   description: '금융 api 프로젝트',
 }
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const userInfo = await getUserInfo()
+
+  console.log('userInfo', userInfo)
+
   return (
     <html lang="ko">
       <body>
