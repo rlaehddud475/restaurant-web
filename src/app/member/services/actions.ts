@@ -6,7 +6,7 @@ export const processJoin = async (params, formData: FormData) => {
   //   const redirectUrl = parms?.get('redirectUrl') ?? '/memeber/login'
   const redirectUrl = '/member/login'
   const form = {},
-    erros = {}
+    errors = {}
   let hasErrors = false
   for (let [key, value] of formData.entries()) {
     if (key.includes('$ACTION')) continue
@@ -30,7 +30,25 @@ export const processJoin = async (params, formData: FormData) => {
     requiredTerms2: '개인정보 처리방침에 동의하셔야 합니다',
     requiredTerms3: '개인정보 수집 및 이용에 동의하셔야 합니다.',
   }
-  for (const [filde, msg] of Object.entries(requiredFields)) {
+  for (const [field, msg] of Object.entries(requiredFields)) {
+    if (!form[field] || !form[field].trim()) {
+      errors[field] = errors[field] ?? []
+      errors[field].push(msg)
+      hasErrors = true
+    }
+  }
+  if (
+    !form.zipCode ||
+    !form.zipCode.trim() ||
+    !form.address ||
+    !form.address.trim()
+  ) {
+    errors.address = errors.address ?? []
+    errors.address.push('주소를 입력하세요.')
+    hasErrors = true
+  }
+  if (hasErrors) {
+    return errors
   }
   console.log('form', form)
   redirect(redirectUrl)
