@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import { cookies } from 'next/headers'
 import apiRequest from '@/app/global/libs/apiRequest'
 import { revalidatePath } from 'next/cache'
+
 /**
  * 회원가입 처리
  * @param params : 쿼리스트링값
@@ -99,7 +100,7 @@ export const processJoin = async (params, formData: FormData) => {
   if (hasErrors) {
     return errors
   }
-  revalidatePath('/', 'layout')
+
   // 회원 가입 완료 후 이동
   redirect(redirectUrl)
 }
@@ -170,6 +171,9 @@ export const processLogin = async (params, formData: FormData) => {
     return errors
   }
 
+  // 캐시 비우기
+  revalidatePath('/', 'layout')
+
   // 로그인 성공시 이동
   redirect(redirectUrl)
 }
@@ -181,13 +185,12 @@ export const processLogin = async (params, formData: FormData) => {
 export const getUserInfo = async () => {
   const cookie = await cookies()
   if (!cookie.has('token')) return
+
   try {
     const res = await apiRequest('/member')
     if (res.status === 200) {
       const result = await res.json()
       return result.success && result.data
-    } else {
-      cookie.delete('token')
     }
   } catch (err) {}
 }
