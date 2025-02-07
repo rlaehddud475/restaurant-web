@@ -1,6 +1,8 @@
 'use server'
 import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
+import { cookies } from 'next/headers'
+
 /**
  * 회원가입 처리
  * @param params : 쿼리스트링값
@@ -107,4 +109,48 @@ export const processJoin = async (params, formData: FormData) => {
  * @param params
  * @param formData
  */
-export const processLogin = async (params, formData: FormData) => {}
+export const processLogin = async (params, formData: FormData) => {
+  const redirectUrl = params?.redirectUrl ?? '/'
+  let errors = {}
+  let hasErrors = false
+  const email = formData.get('email')
+  const password = formData.get('password')
+  if (!email || !email.trim()) {
+    errors.email = errors.email ?? []
+    errors.email.push('이메일을 입력하세요.')
+    hasErrors = true
+  }
+  if (!password || !password.trim()) {
+    errors.password = errors.password ?? []
+    errors.password.push('비밀번호를 입력하세요.')
+    hasErrors = true
+  }
+  if (!hasErrors) {
+    const apiUrl = process.env.API_URL + '/member/login'
+    try {
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+      const result = await res.json()
+      if (res.status === 200 && result.success) {
+        const cookie = await cookies()
+        cookie.set('token', result.data)
+      } else {
+        errors = result.message
+        hasErrors = true
+      }
+    } catch (err) {
+      console.error(err)
+    }
+    return
+  }
+  if (hasErrors) {
+    return errors
+  }
+
+  redirect(redirectUrl)
+}
