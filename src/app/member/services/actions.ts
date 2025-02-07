@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
 import { cookies } from 'next/headers'
 import apiRequest from '@/app/global/libs/apiRequest'
+import { revalidatePath } from 'next/cache'
 /**
  * 회원가입 처리
  * @param params : 쿼리스트링값
@@ -98,7 +99,7 @@ export const processJoin = async (params, formData: FormData) => {
   if (hasErrors) {
     return errors
   }
-
+  revalidatePath('/', 'layout')
   // 회원 가입 완료 후 이동
   redirect(redirectUrl)
 }

@@ -6,6 +6,7 @@ import { Metadata } from 'next'
 import 'react-datepicker/dist/react-datepicker.css'
 import './globals.css'
 import { getUserInfo } from './member/services/actions'
+import { UserProvider } from './global/contexts/UserContext'
 export const metadata: Metadata = {
   title: '핀테크 포토폴리오',
   description: '금융 api 프로젝트',
@@ -17,17 +18,17 @@ export default async function RootLayout({
 }>) {
   const userInfo = await getUserInfo()
 
-  console.log('userInfo', userInfo)
-
   return (
     <html lang="ko">
       <body>
         <StyledComponentsRegistry>
-          <CommonProvider>
-            <Header />
-            <main className="main-content">{children}</main>
-            <Footer />
-          </CommonProvider>
+          <UserProvider _userInfo={userInfo}>
+            <CommonProvider>
+              <Header />
+              <main className="main-content">{children}</main>
+              <Footer />
+            </CommonProvider>
+          </UserProvider>
         </StyledComponentsRegistry>
       </body>
     </html>
